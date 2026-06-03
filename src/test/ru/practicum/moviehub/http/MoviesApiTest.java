@@ -214,7 +214,7 @@ public class MoviesApiTest {
                 .POST(HttpRequest.BodyPublishers.ofString(str, StandardCharsets.UTF_8))
                 .build();
         HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-        assertEquals(415, resp.statusCode(), "POST /movies должен вернуть 415");
+        assertEquals(400, resp.statusCode(), "POST /movies должен вернуть 400");
 
         String contentTypeHeaderValue =
                 resp.headers().firstValue("Content-Type").orElse("");

@@ -1,9 +1,6 @@
 package ru.practicum.moviehub.http;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
 import ru.practicum.moviehub.api.ErrorResponse;
 import ru.practicum.moviehub.model.Movie;
@@ -51,13 +48,13 @@ public class MoviesHandler extends BaseHttpHandler {
             JsonElement jsonElement = JsonParser.parseString(body);
             if (!jsonElement.isJsonObject()) {
                 ErrorResponse errorResponse = new ErrorResponse("Некорректный JSON");
-                sendJson(ex, 415, gson.toJson(errorResponse));
+                sendJson(ex, 400, gson.toJson(errorResponse));
                 return;
             }
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             if (!(jsonObject.has("title") && jsonObject.has("year"))) {
                 ErrorResponse errorResponse = new ErrorResponse("Некорректный JSON");
-                sendJson(ex, 415, gson.toJson(errorResponse));
+                sendJson(ex, 400, gson.toJson(errorResponse));
                 return;
             }
             String title = jsonObject.get("title").getAsString();
@@ -70,6 +67,9 @@ public class MoviesHandler extends BaseHttpHandler {
             } else {
                 sendJson(ex, 422, gson.toJson(errorResponse));
             }
+        } catch (JsonParseException e) {
+            ErrorResponse errorResponse = new ErrorResponse("Некорректный JSON");
+            sendJson(ex, 400, new Gson().toJson(errorResponse));
         }
     }
 
